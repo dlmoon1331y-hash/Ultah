@@ -1,0 +1,159 @@
+index.html.
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ucapan Ulang Tahun</title>
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: 'Comic Sans MS', cursive;
+        background: linear-gradient(45deg, #ff9a9e, #fad0c4);
+        text-align: center;
+        color: white;
+        overflow-x: hidden;
+    }
+    .page {
+        display: none;
+        padding: 20px;
+        animation: fadeIn 1s ease;
+    }
+    .active {
+        display: block;
+    }
+    @keyframes fadeIn {
+        from { opacity: 0; transform: scale(0.95); }
+        to { opacity: 1; transform: scale(1); }
+    }
+    input, button {
+        padding: 10px;
+        font-size: 16px;
+        border: none;
+        border-radius: 8px;
+    }
+    button {
+        background: #ff6f61;
+        color: white;
+        cursor: pointer;
+        margin-top: 10px;
+    }
+    button:hover {
+        background: #ff3b2e;
+    }
+    canvas {
+        position: fixed;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        pointer-events: none;
+    }
+</style>
+</head>
+<body>
+
+<audio id="bgMusic" autoplay loop>
+    <source src="https://www.bensound.com/bensound-music/bensound-celebration.mp3" type="audio/mpeg">
+</audio>
+
+<div id="page1" class="page active">
+    <h1>🎉 Selamat Datang 🎉</h1>
+    <p>Yunita:</p>
+    <input type="text" id="nama">
+    <br><button onclick="nextPage(2)">Lanjut</button>
+</div>
+
+<div id="page2" class="page">
+    <h1>🍰 hayoo masa lupaa dulu suka makan apaa 🍔</h1>
+    <p>Masukkan makanan favoritnya:</p>
+    <input type="text" id="makanan">
+    <br><button onclick="nextPage(3)">Lanjut</button>
+</div>
+
+<div id="page3" class="page">
+    <h1>🎂 umur kamu 🎂</h1>
+    <p> 18 :</p>
+    <input type="number" id="umur">
+    <br><button onclick="nextPage(4)">Lanjut</button>
+</div>
+
+<div id="page4" class="page">
+    <h1 id="ucapan"></h1>
+    <button onclick="nextPage(5)">Lanjut</button>
+</div>
+
+<div id="page5" class="page">
+    <h1 id="penutup"></h1>
+    <canvas id="confetti"></canvas>
+</div>
+
+<script>
+let data = {};
+
+function nextPage(page) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page' + page).classList.add('active');
+
+    if (page === 2) {
+        data.nama = document.getElementById('nama').value;
+    } else if (page === 3) {
+        data.makanan = document.getElementById('makanan').value;
+    } else if (page === 4) {
+        data.umur = document.getElementById('umur').value;
+        document.getElementById('ucapan').textContent = 
+            `Selamat ulang tahun ${data.nama}! Semoga di umur ${data.umur}, kamu  makannanmu ${data.makanan} tetap sama 🎉`;
+    } else if (page === 5) {
+        document.getElementById('penutup').textContent =
+            `Semoga ${data.nama} panjang umur, sehat selalu, menjadi pribadi yang lebih baik, dan bahagia selalu
+              💖🎂`;
+
+        startConfetti();
+    }
+}
+
+// Confetti effect
+const confetti = document.getElementById('confetti');
+const ctx = confetti.getContext('2d');
+confetti.width = window.innerWidth;
+confetti.height = window.innerHeight;
+
+let confettiPieces = [];
+for (let i = 0; i < 100; i++) {
+    confettiPieces.push({
+        x: Math.random() * confetti.width,
+        y: Math.random() * confetti.height - confetti.height,
+        r: Math.random() * 6 + 4,
+        d: Math.random() * 10 + 5,
+        color: `hsl(${Math.random() * 360}, 100%, 50%)`,
+        tilt: Math.random() * 10 - 10
+    });
+}
+
+function startConfetti() {
+    function drawConfetti() {
+        ctx.clearRect(0, 0, confetti.width, confetti.height);
+        confettiPieces.forEach(p => {
+            ctx.beginPath();
+            ctx.fillStyle = p.color;
+            ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2, true);
+            ctx.fill();
+        });
+        updateConfetti();
+        requestAnimationFrame(drawConfetti);
+    }
+
+    function updateConfetti() {
+        confettiPieces.forEach(p => {
+            p.y += p.d;
+            if (p.y > confetti.height) {
+                p.y = 0 - p.r;
+                p.x = Math.random() * confetti.width;
+            }
+        });
+    }
+    drawConfetti();
+}
+</script>
+
+</body>
+</html>                     
